@@ -855,16 +855,17 @@ class AirlockGUI:
     
     def process_gate_requests(self):
         print(f"DEBUG: Processing gate requests...")
-        print(f"DEBUG: Gate A - Request: {self.gate_requests['GATE_REQUEST_A']}, Open: {self.gate_a_open}, Moving: {self.gate_a_moving}")
-        print(f"DEBUG: Gate B - Request: {self.gate_requests['GATE_REQUEST_B']}, Open: {self.gate_b_open}, Moving: {self.gate_b_moving}")
+        print(f"DEBUG: Gate A - Request: {self.gate_requests['GATE_REQUEST_A']}, Open: {self.gate_a_open}, Moving: {self.gate_a_moving}, Target: {self.gate_a_target_state}")
+        print(f"DEBUG: Gate B - Request: {self.gate_requests['GATE_REQUEST_B']}, Open: {self.gate_b_open}, Moving: {self.gate_b_moving}, Target: {self.gate_b_target_state}")
         
-        # Process gate A request - start movement based on request value
-        if self.gate_requests['GATE_REQUEST_A']:  # Request = 1: START OPENING
-            if not self.gate_a_moving:  # Only if not already moving
-                if not self.gate_a_open:  # Only if not already fully open
+        # Process gate A request - allow direction changes during movement
+        if self.gate_requests['GATE_REQUEST_A']:  # Request = 1: OPEN
+            if not self.gate_a_moving:
+                # Start opening if not moving and not fully open
+                if not self.gate_a_open:
                     self.gate_a_target_state = True  # Opening
                     self.gate_a_moving = True
-                    self.gate_a_animation_time = 0  # Reset animation timer
+                    self.gate_a_animation_time = self.gate_animation_progress_a * self.gate_animation_duration
                     self.sensor_states['GATE_MOVING_A'] = True
                     print("Gate A: Starting to open (request = 1) with enhanced animation")
                     
@@ -874,13 +875,24 @@ class AirlockGUI:
                 else:
                     print("DEBUG: Gate A already fully open - no movement needed")
             else:
-                print(f"DEBUG: Gate A can't start opening - already moving: {self.gate_a_moving}")
-        else:  # Request = 0: START CLOSING
-            if not self.gate_a_moving:  # Only if not already moving
-                if self.gate_a_open:  # Only if not already fully closed
+                # Gate is moving - check if we need to change direction
+                if not self.gate_a_target_state:  # Currently closing, switch to opening
+                    self.gate_a_target_state = True  # Switch to opening
+                    # Calculate new animation time to continue from current position
+                    self.gate_a_animation_time = self.gate_animation_progress_a * self.gate_animation_duration
+                    print(f"Gate A: Switching to opening mid-movement from progress {self.gate_animation_progress_a}")
+                    
+                    # Create particles for direction change
+                    initial_particles = self.create_gate_particles(self.gate_a_x, 'opening')[:1]
+                    self.gate_a_particles.extend(initial_particles)
+                # If already opening, continue opening (no change needed)
+        else:  # Request = 0: CLOSE
+            if not self.gate_a_moving:
+                # Start closing if not moving and not fully closed
+                if self.gate_a_open:
                     self.gate_a_target_state = False  # Closing
                     self.gate_a_moving = True
-                    self.gate_a_animation_time = 0  # Reset animation timer
+                    self.gate_a_animation_time = (1.0 - self.gate_animation_progress_a) * self.gate_animation_duration
                     self.sensor_states['GATE_MOVING_A'] = True
                     print("Gate A: Starting to close (request = 0) with enhanced animation")
                     
@@ -890,15 +902,26 @@ class AirlockGUI:
                 else:
                     print("DEBUG: Gate A already fully closed - no movement needed")
             else:
-                print(f"DEBUG: Gate A can't start closing - already moving: {self.gate_a_moving}")
+                # Gate is moving - check if we need to change direction
+                if self.gate_a_target_state:  # Currently opening, switch to closing
+                    self.gate_a_target_state = False  # Switch to closing
+                    # Calculate new animation time to continue from current position
+                    self.gate_a_animation_time = (1.0 - self.gate_animation_progress_a) * self.gate_animation_duration
+                    print(f"Gate A: Switching to closing mid-movement from progress {self.gate_animation_progress_a}")
+                    
+                    # Create particles for direction change
+                    initial_particles = self.create_gate_particles(self.gate_a_x, 'closing')[:1]
+                    self.gate_a_particles.extend(initial_particles)
+                # If already closing, continue closing (no change needed)
         
-        # Process gate B request - start movement based on request value
-        if self.gate_requests['GATE_REQUEST_B']:  # Request = 1: START OPENING
-            if not self.gate_b_moving:  # Only if not already moving
-                if not self.gate_b_open:  # Only if not already fully open
+        # Process gate B request - allow direction changes during movement
+        if self.gate_requests['GATE_REQUEST_B']:  # Request = 1: OPEN
+            if not self.gate_b_moving:
+                # Start opening if not moving and not fully open
+                if not self.gate_b_open:
                     self.gate_b_target_state = True  # Opening
                     self.gate_b_moving = True
-                    self.gate_b_animation_time = 0  # Reset animation timer
+                    self.gate_b_animation_time = self.gate_animation_progress_b * self.gate_animation_duration
                     self.sensor_states['GATE_MOVING_B'] = True
                     print("Gate B: Starting to open (request = 1) with enhanced animation")
                     
@@ -908,13 +931,24 @@ class AirlockGUI:
                 else:
                     print("DEBUG: Gate B already fully open - no movement needed")
             else:
-                print(f"DEBUG: Gate B can't start opening - already moving: {self.gate_b_moving}")
-        else:  # Request = 0: START CLOSING
-            if not self.gate_b_moving:  # Only if not already moving
-                if self.gate_b_open:  # Only if not already fully closed
+                # Gate is moving - check if we need to change direction
+                if not self.gate_b_target_state:  # Currently closing, switch to opening
+                    self.gate_b_target_state = True  # Switch to opening
+                    # Calculate new animation time to continue from current position
+                    self.gate_b_animation_time = self.gate_animation_progress_b * self.gate_animation_duration
+                    print(f"Gate B: Switching to opening mid-movement from progress {self.gate_animation_progress_b}")
+                    
+                    # Create particles for direction change
+                    initial_particles = self.create_gate_particles(self.gate_b_x, 'opening')[:1]
+                    self.gate_b_particles.extend(initial_particles)
+                # If already opening, continue opening (no change needed)
+        else:  # Request = 0: CLOSE
+            if not self.gate_b_moving:
+                # Start closing if not moving and not fully closed
+                if self.gate_b_open:
                     self.gate_b_target_state = False  # Closing
                     self.gate_b_moving = True
-                    self.gate_b_animation_time = 0  # Reset animation timer
+                    self.gate_b_animation_time = (1.0 - self.gate_animation_progress_b) * self.gate_animation_duration
                     self.sensor_states['GATE_MOVING_B'] = True
                     print("Gate B: Starting to close (request = 0) with enhanced animation")
                     
@@ -924,7 +958,17 @@ class AirlockGUI:
                 else:
                     print("DEBUG: Gate B already fully closed - no movement needed")
             else:
-                print(f"DEBUG: Gate B can't start closing - already moving: {self.gate_b_moving}")
+                # Gate is moving - check if we need to change direction
+                if self.gate_b_target_state:  # Currently opening, switch to closing
+                    self.gate_b_target_state = False  # Switch to closing
+                    # Calculate new animation time to continue from current position
+                    self.gate_b_animation_time = (1.0 - self.gate_animation_progress_b) * self.gate_animation_duration
+                    print(f"Gate B: Switching to closing mid-movement from progress {self.gate_animation_progress_b}")
+                    
+                    # Create particles for direction change
+                    initial_particles = self.create_gate_particles(self.gate_b_x, 'closing')[:1]
+                    self.gate_b_particles.extend(initial_particles)
+                # If already closing, continue closing (no change needed)
     
     def animate_gates(self):
         dt = 0.1  # Increased delta time to 100ms for smoother, less frequent updates

@@ -1,6 +1,30 @@
-# ECC2S1 - European Rover Challenge 2025 - Airlock System
+# Airlock Control System HIL Testbench
 
 This repository contains the complete implementation for **European Rover Challenge 2025, Remote Formula, Challenge 2 - Infrastructure, Subtask 1: Airlock System**. The project includes a Hardware-in-the-Loop (HIL) simulator, firmware implementations, and comprehensive testing tools for developing and validating autonomous airlock control systems.
+
+## 📁 Project Structure
+
+```
+Airlock-Control-System-HIL-Testbench/
+├── src/                          # Source code
+│   ├── gui/                      # Python GUI applications
+│   │   ├── airlock_gui.py       # HIL simulator with visual interface
+│   │   └── arduino_gui.py       # Manual control panel for testing
+│   └── firmware/                 # Arduino/ESP32 firmware
+│       ├── control_unit/         # Main airlock control logic
+│       │   └── Control_unit.ino
+│       └── hil_esp32/            # Hardware-in-the-Loop simulator
+│           ├── HIL_ESP32.ino
+│           └── AIRLOCK_README.md
+├── docs/                         # Documentation and assets
+│   ├── images/                   # Diagrams and screenshots
+│   │   ├── HIL_wiring.png       # Hardware wiring diagram
+│   │   └── UI_screenshot.png    # GUI interface screenshot
+│   └── TECHNICAL_HANDBOOK.md     # ERC 2025 technical specifications
+├── requirements.txt              # Python dependencies
+├── .gitignore                   # Git ignore patterns
+└── README.md                    # This file
+```
 
 ## 🚀 Project Overview
 
@@ -14,11 +38,9 @@ The airlock system is designed to safely transport a rover through a three-zone 
 - **Bidirectional Operation**: Supports rover movement in both directions
 - **Real-time Communication**: Serial communication protocol for sensor data and gate commands
 
-
-
 ## 🎯 Key Features
 
-### Airlock HIL Simulator (`airlock_gui.py`)
+### Airlock HIL Simulator (`src/gui/airlock_gui.py`)
 - **Visual Simulation**: Real-time 2D visualization of airlock zones, gates, and rover
 - **Interactive Control**: Move rover using mouse drag or arrow keys
 - **Sensor Simulation**: 
@@ -29,9 +51,9 @@ The airlock system is designed to safely transport a rover through a three-zone 
 - **Safety Logic**: Gates won't close when rover is in safety zone
 - **Real-time Monitoring**: Live sensor state display and serial terminal
 
-![Airlock GUI Interface](UI_screenshot.png)
+![Airlock GUI Interface](docs/images/UI_screenshot.png)
 
-### Arduino Control Panel (`arduino_gui.py`)
+### Arduino Control Panel (`src/gui/arduino_gui.py`)
 - **Manual Testing Interface**: Toggle individual sensor states
 - **Real-time Feedback**: Display gate requests from Arduino
 - **Serial Communication**: Send/receive formatted sensor data
@@ -39,12 +61,12 @@ The airlock system is designed to safely transport a rover through a three-zone 
 
 ### Firmware Implementations
 
-#### Control Unit (`Control_unit.ino`)
+#### Control Unit (`src/firmware/control_unit/Control_unit.ino`)
 - **Basic Airlock Logic**: Simple presence-based gate control
 - **Pin Definitions**: ESP32 GPIO configuration for sensors and actuators
 - **Real-time Processing**: Continuous sensor reading and gate control
 
-#### HIL ESP32 (`HIL_ESP32.ino`)
+#### HIL ESP32 (`src/firmware/hil_esp32/HIL_ESP32.ino`)
 - **Hardware-in-the-Loop**: Simulates physical sensors and actuators
 - **Protocol Parser**: Receives sensor states from GUI simulator
 - **Gate Control**: Outputs gate requests based on internal logic
@@ -61,22 +83,22 @@ The airlock system is designed to safely transport a rover through a three-zone 
 
 ### Python Dependencies
 ```bash
-pip install pyserial==3.5
+pip install -r requirements.txt
 ```
 
 ### Hardware Setup
 
 #### HIL (Hardware-in-the-Loop) Wiring
-For the HIL setup, you'll need two ESP32 boards connected as shown in `HIL_wiring.png`:
+For the HIL setup, you'll need two ESP32 boards connected as shown in `docs/images/HIL_wiring.png`:
 
-![HIL Wiring Diagram](HIL_wiring.png)
+![HIL Wiring Diagram](docs/images/HIL_wiring.png)
 
-**HARDWARE_SIMULATOR (HIL_ESP32.ino)**:
+**HARDWARE_SIMULATOR (src/firmware/hil_esp32/HIL_ESP32.ino)**:
 - Receives sensor data from Python GUI via serial
 - Outputs sensor signals on GPIO pins to simulate physical sensors
 - Connected to CONTROLLER board to provide sensor inputs
 
-**CONTROLLER (Control_unit.ino)**:
+**CONTROLLER (src/firmware/control_unit/Control_unit.ino)**:
 - Reads sensor inputs from HARDWARE_SIMULATOR
 - Executes airlock control logic
 - Outputs gate control signals back to HARDWARE_SIMULATOR
@@ -85,22 +107,21 @@ For the HIL setup, you'll need two ESP32 boards connected as shown in `HIL_wirin
 
 1. **HARDWARE_SIMULATOR Board**:
    ```bash
-   # Flash HIL_ESP32.ino to the first ESP32
+   # Flash src/firmware/hil_esp32/HIL_ESP32.ino to the first ESP32
    # This board connects to Python GUI via USB serial
    ```
 
 2. **CONTROLLER Board**:
    ```bash
-   # Flash Control_unit.ino to the second ESP32  
+   # Flash src/firmware/control_unit/Control_unit.ino to the second ESP32  
    # This board contains your airlock control logic
    ```
-
 
 ### Firmware Development Notes
 
 **IO Operations are Abstracted**: 
 - All GPIO operations are handled by the `processPins()` function
-- **Users only need to modify the `executeLogic()` function** in `Control_unit.ino`
+- **Users only need to modify the `executeLogic()` function** in `src/firmware/control_unit/Control_unit.ino`
 - The `IOpins` struct contains all sensor inputs and actuator outputs
 - Focus on implementing your airlock control algorithm in `executeLogic()` - the hardware abstraction is already implemented
 
@@ -127,12 +148,12 @@ void executeLogic()
 
 ### 1. Launch HIL Simulator
 ```bash
-python airlock_gui.py
+python src/gui/airlock_gui.py
 ```
 
 ### 2. Launch Control Panel (to see status of IO)
 ```bash
-python arduino_gui.py
+python src/gui/arduino_gui.py
 ```
 
 ### 3. Connect to Hardware
@@ -184,8 +205,8 @@ This implementation is designed for **ERC 2025 Challenge 2 - Infrastructure**, s
 
 ## 📚 Documentation
 
-
-- **[TECHNICAL_HANDBOOK.md](TECHNICAL_HANDBOOK.md)**: ERC 2025 technical specifications
+- **[docs/TECHNICAL_HANDBOOK.md](docs/TECHNICAL_HANDBOOK.md)**: ERC 2025 technical specifications
+- **[src/firmware/hil_esp32/AIRLOCK_README.md](src/firmware/hil_esp32/AIRLOCK_README.md)**: HIL-specific documentation
 - **Code Comments**: Extensive inline documentation in all source files
 
 ## 🔧 Development Notes
@@ -193,7 +214,6 @@ This implementation is designed for **ERC 2025 Challenge 2 - Infrastructure**, s
 - Threading used for smooth animations and serial communication
 - Frame-rate independent gate animations
 - Comprehensive error handling for serial communication
-
 
 ## ⚠️ Safety Considerations
 
@@ -211,4 +231,4 @@ Developed for European Rover Challenge 2025 competition. See competition rules f
 
 **Team**: NSPACE  
 **Competition**: European Rover Challenge 2025 - Remote Formula  
-**Challenge**: Infrastructure - Airlock System  
+**Challenge**: Infrastructure - Airlock System

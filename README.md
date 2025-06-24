@@ -8,28 +8,13 @@ The airlock system is designed to safely transport a rover through a three-zone 
 
 ### System Architecture
 
-- **Three-Zone Airlock**: Front Zone (408mm) → Middle Zone (560mm) → Back Zone (408mm)
+- **Three-Zone Airlock**: Front Zone → Middle Zone → Back Zone
 - **Two Automated Gates**: Gate A (Front↔Middle) and Gate B (Middle↔Back)
 - **Safety Systems**: Presence sensors and gate safety sensors prevent unsafe operations
 - **Bidirectional Operation**: Supports rover movement in both directions
 - **Real-time Communication**: Serial communication protocol for sensor data and gate commands
 
-## 📁 Repository Structure
 
-```
-ECC2S1/
-├── airlock_gui.py          # Main HIL Simulator GUI Application
-├── arduino_gui.py          # Arduino Control Panel for Manual Testing
-├── Control_unit/           # Arduino Firmware for Airlock Control
-│   └── Control_unit.ino
-├── HIL_ESP32/             # ESP32 HIL Simulation Firmware
-│   └── HIL_ESP32.ino
-├── requirements.txt        # Python Dependencies
-├── AIRLOCK_README.md      # Detailed Airlock Documentation
-├── PLAN.MD               # Development Plan and Architecture
-├── TECHNICAL_HANDBOOK.md  # ERC 2025 Technical Specifications
-└── test.py               # Testing Utilities
-```
 
 ## 🎯 Key Features
 
@@ -88,7 +73,7 @@ pip install pyserial==3.5
 python airlock_gui.py
 ```
 
-### 2. Launch Control Panel (Optional)
+### 2. Launch Control Panel (to see status of IO)
 ```bash
 python arduino_gui.py
 ```
@@ -152,13 +137,8 @@ This implementation is designed for **ERC 2025 Challenge 2 - Infrastructure**, s
 
 - Threading used for smooth animations and serial communication
 - Frame-rate independent gate animations
-- Collision detection prevents rover passing through closed gates
-- Anti-flicker system for stable visual updates
 - Comprehensive error handling for serial communication
 
-## 🤝 Contributing
-
-This project was developed for the European Rover Challenge 2025. Contributions should align with ERC competition requirements and safety standards.
 
 ## ⚠️ Safety Considerations
 
@@ -174,7 +154,6 @@ Developed for European Rover Challenge 2025 competition. See competition rules f
 
 ---
 
-**Team**: ECC2S1  
+**Team**: NSPACE  
 **Competition**: European Rover Challenge 2025 - Remote Formula  
 **Challenge**: Infrastructure - Airlock System  
-**Last Updated**: 2024 

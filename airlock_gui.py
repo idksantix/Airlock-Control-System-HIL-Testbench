@@ -737,7 +737,7 @@ class AirlockGUI:
         self.rover_dragging = False
     
     def on_key_press(self, event):
-        step = 15
+        step = 0.8
         new_x = self.rover_x
         
         if event.keysym == 'Left':

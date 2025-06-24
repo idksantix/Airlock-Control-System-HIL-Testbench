@@ -29,6 +29,8 @@ The airlock system is designed to safely transport a rover through a three-zone 
 - **Safety Logic**: Gates won't close when rover is in safety zone
 - **Real-time Monitoring**: Live sensor state display and serial terminal
 
+![Airlock GUI Interface](UI_screenshot.png)
+
 ### Arduino Control Panel (`arduino_gui.py`)
 - **Manual Testing Interface**: Toggle individual sensor states
 - **Real-time Feedback**: Display gate requests from Arduino

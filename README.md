@@ -53,8 +53,9 @@ The airlock system is designed to safely transport a rover through a three-zone 
 ### Prerequisites
 - Python 3.x
 - Arduino IDE or PlatformIO
-- ESP32 development board (recommended: Olimex ESP32-POE)
-- Serial USB cable
+- 2x ESP32 development boards (recommended: Olimex ESP32-POE)
+- Serial USB cables
+- Breadboard and jumper wires for HIL setup
 
 ### Python Dependencies
 ```bash
@@ -62,9 +63,63 @@ pip install pyserial==3.5
 ```
 
 ### Hardware Setup
-1. Connect ESP32/Arduino to computer via USB
-2. Upload firmware using Arduino IDE
-3. Note the COM port for serial communication
+
+#### HIL (Hardware-in-the-Loop) Wiring
+For the HIL setup, you'll need two ESP32 boards connected as shown in `HIL_wiring.png`:
+
+**HARDWARE_SIMULATOR (HIL_ESP32.ino)**:
+- Receives sensor data from Python GUI via serial
+- Outputs sensor signals on GPIO pins to simulate physical sensors
+- Connected to CONTROLLER board to provide sensor inputs
+
+**CONTROLLER (Control_unit.ino)**:
+- Reads sensor inputs from HARDWARE_SIMULATOR
+- Executes airlock control logic
+- Outputs gate control signals back to HARDWARE_SIMULATOR
+
+#### Firmware Installation
+
+1. **HARDWARE_SIMULATOR Board**:
+   ```bash
+   # Flash HIL_ESP32.ino to the first ESP32
+   # This board connects to Python GUI via USB serial
+   ```
+
+2. **CONTROLLER Board**:
+   ```bash
+   # Flash Control_unit.ino to the second ESP32  
+   # This board contains your airlock control logic
+   ```
+
+#### Wiring Connections
+Refer to `HIL_wiring.png` for detailed pin connections between the two ESP32 boards.
+
+### Firmware Development Notes
+
+**IO Operations are Abstracted**: 
+- All GPIO operations are handled by the `processPins()` function
+- **Users only need to modify the `executeLogic()` function** in `Control_unit.ino`
+- The `IOpins` struct contains all sensor inputs and actuator outputs
+- Focus on implementing your airlock control algorithm in `executeLogic()` - the hardware abstraction is already implemented
+
+#### Example Logic Implementation
+```cpp
+void executeLogic()
+{
+    // Your airlock control logic goes here
+    // Read from: ioPins.PRESENCE_FRONT, ioPins.PRESENCE_MIDDLE, ioPins.PRESENCE_BACK
+    // Read from: ioPins.GATE_SAFETY_A, ioPins.GATE_SAFETY_B  
+    // Read from: ioPins.GATE_MOVING_A, ioPins.GATE_MOVING_B
+    
+    // Write to: ioPins.GATE_REQUEST_A, ioPins.GATE_REQUEST_B
+    
+    // Example: Simple presence-based control
+    if (ioPins.PRESENCE_FRONT)
+        ioPins.GATE_REQUEST_A = true;
+    else 
+        ioPins.GATE_REQUEST_A = false;
+}
+```
 
 ## 🚀 Quick Start
 

@@ -67,6 +67,8 @@ pip install pyserial==3.5
 #### HIL (Hardware-in-the-Loop) Wiring
 For the HIL setup, you'll need two ESP32 boards connected as shown in `HIL_wiring.png`:
 
+![HIL Wiring Diagram](HIL_wiring.png)
+
 **HARDWARE_SIMULATOR (HIL_ESP32.ino)**:
 - Receives sensor data from Python GUI via serial
 - Outputs sensor signals on GPIO pins to simulate physical sensors

@@ -95,8 +95,6 @@ For the HIL setup, you'll need two ESP32 boards connected as shown in `HIL_wirin
    # This board contains your airlock control logic
    ```
 
-#### Wiring Connections
-Refer to `HIL_wiring.png` for detailed pin connections between the two ESP32 boards.
 
 ### Firmware Development Notes
 
@@ -173,7 +171,6 @@ python arduino_gui.py
 2. **Safety Test**: Position rover in gate safety zone and observe gate behavior
 3. **Bidirectional**: Test movement in both directions
 4. **Edge Cases**: Test behavior at zone boundaries
-5. **Communication**: Verify serial data integrity
 
 ## 🏆 European Rover Challenge Context
 
@@ -187,8 +184,7 @@ This implementation is designed for **ERC 2025 Challenge 2 - Infrastructure**, s
 
 ## 📚 Documentation
 
-- **[AIRLOCK_README.md](AIRLOCK_README.md)**: Detailed airlock system documentation
-- **[PLAN.MD](PLAN.MD)**: Development roadmap and architecture decisions
+
 - **[TECHNICAL_HANDBOOK.md](TECHNICAL_HANDBOOK.md)**: ERC 2025 technical specifications
 - **Code Comments**: Extensive inline documentation in all source files
 

